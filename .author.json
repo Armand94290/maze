@@ -5,6 +5,7 @@
     },
     {
         "firstName": "Kévin",
-        "lastName": "PARRY"
+        "lastName": "PARRY",
+        "test": "test"
     }
 ]
