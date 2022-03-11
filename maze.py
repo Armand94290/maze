@@ -16,3 +16,6 @@ for line in lines:
         
     x += 1
 
+for i in range (0,12):
+    print(matrix[i])
+
