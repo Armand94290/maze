@@ -1,10 +1,18 @@
 import csv
 
-with open("map_maze/rect_01.map", "r") as tf:
-    lines = tf.read().split('\n')
-    for line in lines:
-        for column in line:
-            print(column)
-    
+with open("map_maze/rect_01.map", "r") as map:
+    lines = map.read().split('\n')
+matrix = []
+x = 0
+for line in lines:
+    y = 0
+    if x == 0 or x > len(matrix) - 1:
+        matrix.append([])
 
-print ('bonjour')
+    for value in line:
+        matrix[x].append(value)
+        print(matrix[x][y])
+        y += 1
+        
+    x += 1
+
