@@ -2,7 +2,7 @@ import csv
 from tracemalloc import start
 from turtle import st
 
-with open("map_maze/rect_01.map", "r") as map:
+with open("map_maze/rect_05.map", "r") as map:
     lines = map.read().split('\n')
 matrix = []
 
@@ -33,9 +33,16 @@ for line in lines:
         
     x += 1
 
-for i in range (0,12):
-    print(matrix[i])
+maze = []
+
+def createmaze():
+    for i in range (0,x):
+        maze.append(matrix[i])
+    print(maze)
+    return maze
+    
+
+createmaze()
 
 pt_start = (start_x, start_y)
 print (pt_start)
-
