@@ -30,18 +30,18 @@ for line in lines:
         
     x += 1
 
-maze = []
 
-def createmaze():
-    for i in range (0,x):
-        maze.append(matrix[i])
-    print (maze)
-    return maze
+# def createmaze():
+#     maze = []
+#     for i in range (0,x):
+#         maze.append(matrix[i])
+#     print (maze)
+#     return maze
 
 def get_starting_finishing_points():
-    _start = [i for i in range(len(maze[0])) if maze[0][i] == '1']
-    _end = [i for i in range(len(maze[0])) if maze[len(maze)-1][i] == '2']
-    return start[[1,2],[3,4]]
+    _start = [i for i in range(len(maze[1])) if maze[start_x][start_y] == '1']
+    _end = [i for i in range(len(maze[end_x])) if maze[end_x][end_y] == '2']
+    return [start_x, _start[0]], [end_x, _end[0]]
 
 
 def maze_solver():
@@ -106,7 +106,7 @@ if __name__ == '__main__':
         ['*','*','*','*','*','*','*','*',' ',' ',' ',' ','*'],
         ['*','*','*','*','*','*','*','*','*','2','*','*','*']
     ]
-    print (maze[0][9])
+    print (maze[1][12])
 
     start, finish = get_starting_finishing_points()
     maze[start[0]][start[1]] = '0'

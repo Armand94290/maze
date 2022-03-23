@@ -45,9 +45,6 @@ def escape():
         maze[current_cell[0]][current_cell[1] - 1] = '0'
         rat_path.append([current_cell[0], current_cell[1] - 1])
         escape()
-
-    # If *e get here, this means that *e made a *rong decision, so *e need to
-    # backtrack
     current_cell = rat_path[len(rat_path) - 1]
     if current_cell != finish:
         cell_to_remove = rat_path[len(rat_path) - 1]
@@ -59,7 +56,7 @@ if __name__ == '__main__':
     maze = [
         ['*', 'c', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*',
          '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'],
-        ['*', 'c', 'c', '*', 'c', '*', 'c', 'c', '*', '*', 'c', 'c', '1', 'c',
+        ['*', 'c', 'c', '*', 'c', '*', 'c', 'c', '*', '*', 'c', 'c', 'c', 'c',
          'c', '*', '*', 'c', '*', '*', 'c', 'c', 'c', 'c', 'c', 'c', '*'],
         ['*', '*', 'c', '*', 'c', 'c', 'c', '*', '*', '*', '*', '*', '*', '*',
          'c', 'c', 'c', 'c', 'c', '*', '*', '*', '*', '*', '*', 'c', '*'],
