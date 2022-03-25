@@ -1,10 +1,14 @@
 from asyncio.windows_events import NULL
 import math
+import time
 from operator import indexOf
+from tracemalloc import start
 from simpleai.search import SearchProblem, astar
 
+start = time.time()
 
 class MazeSolver(SearchProblem):
+    
     def __init__(self, tableau):
         self.tableau = tableau
         self.goal = (0, 0)
@@ -92,3 +96,8 @@ if __name__ == "__main__":
                 print(MAP[y][x], end='')
 
         print()
+
+end = time.time()
+finish_time = end - start
+print("Le chemin à été résolu en :",finish_time,"secondes.")
+
