@@ -1,116 +1,94 @@
-import csv
-from tracemalloc import start
-from turtle import st
-
-with open("map_maze/rect_01.map", "r") as map:
-    lines = map.read().split('\n')
-matrix = []
-
-start_x = 0
-start_y = 0
-end_x = 0
-end_y = 0
-
-for line in lines:
-    y = 0
-    x = 0
-    if x == 0 or x > len(matrix) - 1:
-        matrix.append([])
-    for value in line:
-        if value == '1':
-            start_x = x
-            start_y = y
-
-        if value == '2':
-            end_x = x
-            end_y = y
-
-        matrix[x].append(value)
-        y += 1
-        
-    x += 1
+from asyncio.windows_events import NULL
+import math
+from operator import indexOf
+from simpleai.search import SearchProblem, astar
 
 
-# def createmaze():
-#     maze = []
-#     for i in range (0,x):
-#         maze.append(matrix[i])
-#     print (maze)
-#     return maze
+class MazeSolver(SearchProblem):
+    def __init__(self, tableau):
+        self.tableau = tableau
+        self.goal = (0, 0)
 
-def get_starting_finishing_points():
-    _start = [i for i in range(len(maze[1])) if maze[start_x][start_y] == '1']
-    _end = [i for i in range(len(maze[end_x])) if maze[end_x][end_y] == '2']
-    return [start_x, _start[0]], [end_x, _end[0]]
+        for y in range(len(self.tableau)):
+            for x in range(len(self.tableau[y])):
+                if self.tableau[y][x] == "1":
+                    self.initial = (x, y)
+                elif self.tableau[y][x] == "2":
+                    self.goal = (x, y)
+
+        super(MazeSolver, self).__init__(initial_state=self.initial)
+
+    def actions(self, state):
+        moves = []
+        for move in COSTS.keys():
+            newx, newy = self.result(state, move)
+            if self.tableau[newy][newx] != "*":
+                moves.append(move)
+
+        return moves
+
+    def result(self, state, move):
+        x, y = state
+
+        if move.count("up"):
+            y -= 1
+        if move.count("down"):
+            y += 1
+        if move.count("left"):
+            x -= 1
+        if move.count("right"):
+            x += 1
+
+        new_state = (x, y)
+
+        return new_state
+
+    def is_goal(self, state):
+        return state == self.goal
+
+    def cost(self, state, move, state2):
+        return COSTS[move]
+
+    def heuristic(self, state):
+        x, y = state
+        gx, gy = self.goal
+
+        return math.sqrt((x - gx) ** 2 + (y - gy) ** 2)
 
 
-def maze_solver():
-    for i in range(0, len(maze)):
-        for j in range(0, len(maze[0])):
-            if maze[i][j] == ' ':
-                print(f'{maze[i][j]}', end=" ")
-            elif maze[i][j] == ' ':
-                print(f'{maze[i][j]}', end=" ")
-            elif maze[i][j] == '0':
-                print(f'{maze[i][j]}', end=" ")
+with open("map_maze/oval_01.map", "r") as map:
+    lines = map.read()
+
+if __name__ == "__main__":
+    MAP = lines
+
+    MAP = [list(x) for x in MAP.split("\n") if x]
+
+    cost_move = 1.0
+
+    COSTS = {
+        "up": cost_move,
+        "down": cost_move,
+        "left": cost_move,
+        "right": cost_move,
+    }
+
+    problem = MazeSolver(MAP)
+
+    result = astar(problem, graph_search=True)
+
+    path = [x[1] for x in result.path()]
+
+    print()
+    for y in range(len(MAP)):
+        for x in range(len(MAP[y])):
+            if (x, y) == problem.initial:
+                print('1', end='')
+            elif (x, y) == problem.goal:
+                print('2', end='')
+            elif (x, y) in path:
+                print('0', end='')
             else:
-                print(f'{maze[i][j]}', end=" ")
-        print('\n')
+                print(MAP[y][x], end='')
 
-
-def escape():
-    current_cell = rat_path
-
-    if current_cell == finish:
-        return
-
-    if maze[current_cell[0] + 1][current_cell[1]] == ' ':
-        maze[current_cell[0] + 1][current_cell[1]] = '0'
-        rat_path.append([current_cell[0] + 1, current_cell[1]])
-        escape()
-
-    if maze[current_cell[0]][current_cell[1] + 1] == ' ':
-        maze[current_cell[0]][current_cell[1] + 1] = '0'
-        rat_path.append([current_cell[0], current_cell[1] + 1])
-        escape()
-
-    if maze[current_cell[0] - 1][current_cell[1]] == ' ':
-        maze[current_cell[0] - 1][current_cell[1]] = '0'
-        rat_path.append([current_cell[0] - 1, current_cell[1]])
-        escape()
-
-    if maze[current_cell[0]][current_cell[1] - 1] == ' ':
-        maze[current_cell[0]][current_cell[1] - 1] = '0'
-        rat_path.append([current_cell[0], current_cell[1] - 1])
-        escape()
-
-    current_cell = rat_path[len(rat_path) - 1]
-    if current_cell != finish:
-        cell_to_remove = rat_path[len(rat_path) - 1]
-        rat_path.remove(cell_to_remove)
-        maze[cell_to_remove[0]][cell_to_remove[1]] = ' '
-
-
-if __name__ == '__main__':
-    maze = [
-        ['*','*','*','*','*','*','*','*','*','*','*','*','*'],
-        ['*',' ',' ','*','*',' ',' ',' ',' ',' ',' ',' ','1'],
-        ['*',' ',' ',' ',' ',' ','*','*','*','*','*','*','*'],
-        ['*',' ',' ',' ',' ',' ',' ',' ',' ','*','*','*','*'],
-        ['*','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'],
-        ['*',' ',' ',' ',' ',' ','*','*','*','*',' ','*','*'],
-        ['*','*','*','*','*','*','*','*','*','*',' ','*','*'],
-        ['*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'],
-        ['*',' ',' ',' ',' ','*','*','*','*','*','*','*','*'],
-        ['*',' ',' ',' ',' ',' ',' ',' ',' ','*',' ',' ','*'],
-        ['*','*','*','*','*','*','*','*',' ',' ',' ',' ','*'],
-        ['*','*','*','*','*','*','*','*','*','2','*','*','*']
-    ]
-    print (maze[1][12])
-
-    start, finish = get_starting_finishing_points()
-    maze[start[0]][start[1]] = '0'
-
-    rat_path = [start]
-    escape()
-    print(maze_solver())
+        print()
